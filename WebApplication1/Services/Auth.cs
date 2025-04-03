@@ -1,54 +1,83 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using WebApplication1.Models;
 using WebApplication1.Data;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using WebApplication1.Models.DTO;
 
-namespace WebApplication1.Services;
-public class Auth
+namespace WebApplication1.Services
 {
-    private readonly UserManager<Register> _userManager;
-    private readonly PasswordHasher<Register> _passwordHasher = new PasswordHasher<Register>();
-    private readonly ApplicationDBContext _context;
-    public Auth(UserManager<Register> userManager, ApplicationDBContext context)
+    public class Auth : IAuthService
     {
-        _userManager = userManager;
-        _context = context;
-    }
+        private readonly ApplicationDBContext _context;
+        private readonly PasswordHasher<Register> _passwordHash;
+        private readonly SignInManager<Register> _signinManager;
+        private readonly UserManager<Register> _userManager;
 
-    public async Task<string> RegisterAsync(string name, string username, string password, string email, string phone)
-    {
-        var userExist = await _userManager.FindByNameAsync(email);
-        if (userExist != null)
+        public Auth(ApplicationDBContext context, SignInManager<Register> signInManager, UserManager<Register> userManager)
         {
-            return "User already exists!";
+            _context = context;
+            _signinManager = signInManager;
+            _passwordHash = new PasswordHasher<Register>();
+            _userManager = userManager;
         }
-        var user = new Register
-        {
-            Id = Guid.NewGuid(),
-            Name = name,
-            Username = username,
-            Password = _passwordHasher.HashPassword(null, password),
-            Email = email,
-            Phone = phone
-        };
 
-        var loginEntry = new Login
+        public async Task<string> RegisterAsync(string name, string username, string password, string email, string phone)
         {
-            Id = Guid.NewGuid(),
-            Username = username,
-            Password = _passwordHasher.HashPassword(null, password)
-        };
+            // Check if the user already exists
+            var userExist = await _userManager.FindByEmailAsync(email);
+            if (userExist != null)
+            {
+                return "User already exists!";
+            }
 
-        await _context.Logins.AddAsync(loginEntry);
-        await _context.SaveChangesAsync();
+            // Create the new user
+            var user = new Register
+            {
+                UserName = username,
+                Email = email,
+                Name = name,
+                Phone = phone
+            };
 
-        var result = await _userManager.CreateAsync(user, password);
-        if (result.Succeeded)
-        {
-            return "User created successfully!";
+            // Hash the password before storing it
+            var result = await _userManager.CreateAsync(user, password);
+
+            if (result.Succeeded)
+                return "User created successfully!";
+            return "Failed to create user!";
+
         }
-        else
+
+        public async Task<string> LoginAsync(string username, string password)
         {
-            return "User creation failed!";
+            // Find the user by username
+            var user = await _context.Registers.FirstOrDefaultAsync(x => x.UserName == username);
+            if (user == null)
+            {
+                return "User not found!";
+            }
+
+            // Verify the password
+            var verificationResult = await _signinManager.PasswordSignInAsync(user, password, isPersistent: false, lockoutOnFailure: false);
+            if (verificationResult.Succeeded)
+            {
+                return "User logged in!";
+            }
+
+            return "Invalid credentials!";
+        }
+        public async Task<List<RegisterDTO>> GetAllUsersAsync()
+        {
+            var users = await _context.Registers.Select(x => new RegisterDTO
+            {
+                Id = x.Id,
+                Name = x.Name,
+                UserName = x.UserName,
+                Email = x.Email,
+                Phone = x.Phone
+            }).ToListAsync();
+            return users;
         }
     }
 }
