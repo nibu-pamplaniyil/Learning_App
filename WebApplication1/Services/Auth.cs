@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using WebApplication1.Models;
 using WebApplication1.Data;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace WebApplication1.Services
 {
@@ -22,13 +23,13 @@ namespace WebApplication1.Services
             _userManager = userManager;
         }
 
-        public async Task<string> RegisterAsync(string name, string username, string password, string email, string phone)
+        public async Task<IActionResult> RegisterAsync(string name, string username, string password, string email, string phone)
         {
             // Check if the user already exists
             var userExist = await _userManager.FindByEmailAsync(email);
             if (userExist != null)
             {
-                return "User already exists!";
+                return new ConflictObjectResult("User already exist");
             }
 
             // Create the new user
@@ -44,28 +45,27 @@ namespace WebApplication1.Services
             var result = await _userManager.CreateAsync(user, password);
 
             if (result.Succeeded)
-                return "User created successfully!";
-            return "Failed to create user!";
+                return new OkObjectResult("User created successfully");
+            var error = result.Errors.Select(e => e.Description);
+            return new BadRequestObjectResult(error);
 
         }
 
-        public async Task<string> LoginAsync(string username, string password)
+        public async Task<Microsoft.AspNetCore.Identity.SignInResult> LoginAsync(string username, string password)
         {
             // Find the user by username
-            var user = await _context.Registers.FirstOrDefaultAsync(x => x.UserName == username);
+            var user = await _userManager.FindByNameAsync(username);
             if (user == null)
             {
-                return "User not found!";
+                return Microsoft.AspNetCore.Identity.SignInResult.Failed;
             }
 
             // Verify the password
             var verificationResult = await _signinManager.PasswordSignInAsync(user, password, isPersistent: false, lockoutOnFailure: false);
             if (verificationResult.Succeeded)
-            {
-                return "User logged in!";
-            }
+                return verificationResult;
+            return Microsoft.AspNetCore.Identity.SignInResult.Failed;
 
-            return "Invalid credentials!";
         }
         public async Task<List<RegisterDTO>> GetAllUsersAsync()
         {
