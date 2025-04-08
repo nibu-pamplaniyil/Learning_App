@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
+using NETCore.MailKit.Core;
 
 namespace WebApplication1.Services
 {
@@ -14,13 +16,17 @@ namespace WebApplication1.Services
         private readonly PasswordHasher<Register> _passwordHash;
         private readonly SignInManager<Register> _signinManager;
         private readonly UserManager<Register> _userManager;
+        private readonly IEmailService _emailService;
+        private static readonly ConcurrentDictionary<string, string> _otpStore = new ConcurrentDictionary<string, string>();
+        private static readonly TimeSpan _otpExpirationTime = TimeSpan.FromMinutes(5);
 
-        public Auth(ApplicationDBContext context, SignInManager<Register> signInManager, UserManager<Register> userManager)
+        public Auth(ApplicationDBContext context, SignInManager<Register> signInManager, UserManager<Register> userManager, IEmailService emailService)
         {
             _context = context;
             _signinManager = signInManager;
             _passwordHash = new PasswordHasher<Register>();
             _userManager = userManager;
+            _emailService = emailService;
         }
 
         public async Task<IActionResult> RegisterAsync(string name, string username, string password, string email, string phone)
@@ -78,6 +84,41 @@ namespace WebApplication1.Services
                 Phone = x.Phone
             }).ToListAsync();
             return users;
+        }
+        public async Task<bool> SendOTP(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return false;
+            }
+            string otp = GenerateRandomOtp();
+            string subject = "Your OTP Code For Login";
+            string message = $"Your OTP code is: {otp}. It will expire in {_otpExpirationTime.TotalMinutes} minutes.";
+            try
+            {
+                await _emailService.SendAsync(email, subject, message);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            _otpStore.AddOrUpdate(email, otp, (key, oldValue) => otp);
+            //var otpExpirationTask = Task.Delay(_otpExpirationTime);
+            //await otpExpirationTask;
+            //_otpStore.TryRemove(email, out _);
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(_otpExpirationTime);
+                _otpStore.TryRemove(email, out _);
+            });
+            return true;
+        }
+        private string GenerateRandomOtp()
+        {
+            Random random = new Random();
+            int otp = random.Next(100000, 999999);
+            return otp.ToString();
         }
     }
 }

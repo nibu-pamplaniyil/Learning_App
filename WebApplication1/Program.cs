@@ -10,7 +10,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IAuthService, Auth>();
 builder.Services.AddScoped<ISkillsService, SkillsService>();
+builder.Services.AddScoped<IEmailService, EmailServicer>();
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
+
+//Addign session services
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(option =>
+{
+    option.IdleTimeout = TimeSpan.FromMinutes(10);
+    option.Cookie.HttpOnly = true;
+    option.Cookie.IsEssential = true;
+});
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -32,6 +43,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapControllers();
 
