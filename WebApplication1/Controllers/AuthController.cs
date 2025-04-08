@@ -82,4 +82,31 @@ public class AuthController : ControllerBase
         }
     }
 
+    [HttpPost("otpverify")]
+    public async Task<IActionResult> OTPVerify([FromBody] OtpDTO otpDTO)
+    {
+        try
+        {
+            var pendingOtp = _httpContextAccessor.HttpContext.Session.GetString("PendingOtp");
+            if (pendingOtp == null)
+            {
+                return BadRequest("No pending OTP requests");
+            }
+            bool result = await _authService.VerifyOTP(pendingOtp, otpDTO.OTP);
+            if (result)
+            {
+                _httpContextAccessor.HttpContext.Session.Remove("PendingOtp");
+                return Ok("OTP verified... Login successfully");
+            }
+            else
+            {
+                return BadRequest("Invalid OTP");
+            }
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
 }

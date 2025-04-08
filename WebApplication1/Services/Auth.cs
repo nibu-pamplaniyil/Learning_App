@@ -114,6 +114,24 @@ namespace WebApplication1.Services
             });
             return true;
         }
+
+        public async Task<bool> VerifyOTP(string pendingOtp, string Otp)
+        {
+            if (pendingOtp == null)
+            {
+                return false;
+            }
+            if (_otpStore.TryGetValue(pendingOtp, out string storedOtp))
+            {
+                if (storedOtp == Otp)
+                {
+                    _otpStore.TryRemove(pendingOtp, out _);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private string GenerateRandomOtp()
         {
             Random random = new Random();
