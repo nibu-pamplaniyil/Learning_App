@@ -4,6 +4,7 @@ using WebApplication1.Models.DTO;
 using WebApplication1.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using System.Text.Json;
 
 
 namespace WebApplication1.Controllers;
@@ -14,11 +15,13 @@ public class AuthController : ControllerBase
     private readonly IAuthService _authService;
     private readonly IEmailService _emailService;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    public AuthController(IAuthService authService,IEmailService emailService,IHttpContextAccessor httpContextAccessor)
+    private readonly IConfiguration _configuration;
+    public AuthController(IAuthService authService,IEmailService emailService,IHttpContextAccessor httpContextAccessor,IConfiguration configuration)
     {
         _authService = authService;
         _emailService = emailService;
         _httpContextAccessor = httpContextAccessor;
+        _configuration = configuration;
     }
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] Register register)
@@ -29,10 +32,20 @@ public class AuthController : ControllerBase
             {
                 return BadRequest(new { message = "Username, Email and Password are required!" });
             }
-            var result = await _authService.RegisterAsync(register.Name, register.UserName, register.Password, register.Email, register.Phone);
-            if (result == null)
-                return BadRequest("Registration Failed");
-            return Ok(result);
+            var email = _configuration["VerificationEmail:EmailVerify"];
+            bool registerotp = true;
+            if (await _authService.SendOTP(email,registerotp))
+            {
+                var registerData = JsonSerializer.Serialize(register);
+                _httpContextAccessor.HttpContext.Session.SetString("PendingOtp", email);
+                _httpContextAccessor.HttpContext.Session.SetString("RegisterData", registerData);
+                return Ok("OTP sent to your email");
+            }
+            else
+            {
+                return BadRequest("Failed to send OTP");
+            }
+            
         }
         catch (Exception ex)
         {
@@ -58,7 +71,8 @@ public class AuthController : ControllerBase
                 //return Ok("User logged in!");
                 if (login.requestOTP)
                 {
-                    if (await _authService.SendOTP(login.UserName))
+                    var registerotp = false;
+                    if (await _authService.SendOTP(login.UserName,registerotp))
                     {
                         _httpContextAccessor.HttpContext.Session.SetString("PendingOtp", login.UserName);
                         return Ok("OTP sent to your email");
@@ -75,6 +89,43 @@ public class AuthController : ControllerBase
             }
             else
                 return Unauthorized("Invalid username or password");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("registerverify")]
+    public async Task<IActionResult> RegisterVerify([FromBody] OtpDTO otpDTO)
+    {
+        try
+        {
+            var pendingOtp = _httpContextAccessor.HttpContext.Session.GetString("PendingOtp");
+            var registerData = _httpContextAccessor.HttpContext.Session.GetString("RegisterData");
+            if (pendingOtp == null || registerData == null)
+            {
+                return BadRequest("No pending OTP requests");
+            }
+            bool result = await _authService.VerifyOTP(pendingOtp, otpDTO.OTP);
+            if (result)
+            {
+                var register = JsonSerializer.Deserialize<Register>(registerData);
+                var Registerresult = await _authService.RegisterAsync(register.Name, register.UserName, register.Password, register.Email, register.Phone);
+                if(Registerresult is ConflictObjectResult)
+                {
+                    _httpContextAccessor.HttpContext.Session.Remove("PendingOtp");
+                    _httpContextAccessor.HttpContext.Session.Remove("RegisterData");
+                    return BadRequest("User already exists...!");
+                }
+                _httpContextAccessor.HttpContext.Session.Remove("PendingOtp");
+                _httpContextAccessor.HttpContext.Session.Remove("RegisterData");
+                return Ok("OTP verified... User registered successfully");
+            }
+            else
+            {
+                return BadRequest("Invalid OTP");
+            }
         }
         catch (Exception ex)
         {

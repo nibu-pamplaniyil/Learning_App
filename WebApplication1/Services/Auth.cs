@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using NETCore.MailKit.Core;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace WebApplication1.Services
 {
@@ -35,7 +36,7 @@ namespace WebApplication1.Services
             var userExist = await _userManager.FindByEmailAsync(email);
             if (userExist != null)
             {
-                return new ConflictObjectResult("User already exist");
+                return new ConflictObjectResult(new {message = "User already exists wi th this email" });
             }
 
             // Create the new user
@@ -85,10 +86,10 @@ namespace WebApplication1.Services
             }).ToListAsync();
             return users;
         }
-        public async Task<bool> SendOTP(string email)
+        public async Task<bool> SendOTP(string email,bool registerotp)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
+            if (user == null && registerotp==false)
             {
                 return false;
             }

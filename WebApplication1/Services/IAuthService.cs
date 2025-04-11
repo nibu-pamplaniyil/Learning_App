@@ -8,6 +8,6 @@ public interface IAuthService
     Task<IActionResult> RegisterAsync(string name, string username, string password, string email, string phone);
     Task<Microsoft.AspNetCore.Identity.SignInResult> LoginAsync(string username, string password);
     Task<List<RegisterDTO>> GetAllUsersAsync();
-    Task<bool> SendOTP(string email);
+    Task<bool> SendOTP(string email,bool registerotp);
     Task<bool> VerifyOTP(string pendingOtp, string otp);
 }
