@@ -1,0 +1,6 @@
+/* In app.component.css or .scss */
+:host {
+  display: block; /* Ensure it takes up the full width */
+  margin: 0;
+  padding: 0;
+}

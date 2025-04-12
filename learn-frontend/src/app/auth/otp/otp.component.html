@@ -1,0 +1,13 @@
+<div class="auth-container">
+  <div class="auth-box">
+    <h2>Verify OTP</h2>
+    <p>Please enter the OTP sent to your email</p>
+    <form (ngSubmit)="verifyOtp()">
+      <input type="text" placeholder="OTP" [(ngModel)]="otp" name="otp" required />
+      <button type="submit">Verify OTP</button>
+      <p class="link-text">
+        Didn't receive the OTP? <a href="#">Resend OTP</a>
+      </p>
+    </form>
+  </div>
+</div>

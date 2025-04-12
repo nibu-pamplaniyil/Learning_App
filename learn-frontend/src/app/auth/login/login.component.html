@@ -1,0 +1,14 @@
+<div class="auth-container">
+  <div class="auth-box">
+    <h2>Welcome Back</h2>
+    <p>Login to your account</p>
+    <form (ngSubmit)="gotoLogin()">
+      <input type="email" placeholder="Email" [(ngModel)]="email" name="email" required />
+      <input type="password" placeholder="Password" [(ngModel)]="password" name="password" required />
+      <button type="submit">Login</button>
+      <p class="link-text">
+        Don’t have an account? <a routerLink="/register">Register here</a>
+      </p>
+    </form>
+  </div>
+</div>
