@@ -2,6 +2,9 @@
   <div class="auth-box">
     <h2>Welcome Back</h2>
     <p>Login to your account</p>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
     <form (ngSubmit)="gotoLogin()">
       <input type="email" placeholder="Email" [(ngModel)]="email" name="email" required />
       <input type="password" placeholder="Password" [(ngModel)]="password" name="password" required />

@@ -2,6 +2,11 @@
 body {
   margin: 0;
 }
+.error-message {
+  color: red;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
 
 .auth-container {
   height: 100vh;

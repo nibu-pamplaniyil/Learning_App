@@ -2,6 +2,7 @@ import { ApplicationConfig } from '@angular/core';
 import { provideRouter, Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component';
 import { OtpComponent } from './auth/otp/otp.component';
+import { provideHttpClient } from '@angular/common/http';
 
 
 import { provideClientHydration } from '@angular/platform-browser';
@@ -12,5 +13,8 @@ const routes: Routes = [
 ];
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideClientHydration()]
+  providers: [
+    provideRouter(routes),
+    provideHttpClient(),
+    provideClientHydration()]
 };
