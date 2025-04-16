@@ -75,7 +75,7 @@ public class AuthController : ControllerBase
                     if (await _authService.SendOTP(login.UserName,registerotp))
                     {
                         _httpContextAccessor.HttpContext.Session.SetString("PendingOtp", login.UserName);
-                        return Ok("OTP sent to your email");
+                        return Ok(new {message="OTP sent to your email"});
                     }
                     else
                     {
@@ -147,7 +147,7 @@ public class AuthController : ControllerBase
             if (result)
             {
                 _httpContextAccessor.HttpContext.Session.Remove("PendingOtp");
-                return Ok("OTP verified... Login successfully");
+                return Ok(new {Message="OTP verified... Login successfully"});
             }
             else
             {
