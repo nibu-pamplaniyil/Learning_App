@@ -30,10 +30,19 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAllOrigins",
         builder =>
         {
-            builder.AllowAnyOrigin()
+            builder.WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
         });
+});
+
+builder.Services.AddSession(option =>
+{
+    option.Cookie.HttpOnly = true;
+    option.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    option.Cookie.SameSite = SameSiteMode.None;
+    option.IdleTimeout = TimeSpan.FromMinutes(10);
 });
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
