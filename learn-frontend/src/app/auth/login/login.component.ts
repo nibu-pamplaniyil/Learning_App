@@ -22,7 +22,9 @@ export class LoginComponent {
       UserName: this.email,
       Password: this.password
     };
-    this.httpClient.post('https://localhost:7033/api/auth/login', loginData)
+    this.httpClient.post('https://localhost:7033/api/auth/login', loginData, {
+      withCredentials: true
+    })
       .subscribe(
         (response:any) => {
           console.log('OTP Send', response.Message);

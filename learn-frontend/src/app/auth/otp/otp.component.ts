@@ -20,7 +20,9 @@ export class OtpComponent {
     const OTP = {
       OTP: this.otp
     };
-    this.http.post('https://localhost:7033/api/auth/otpverify', OTP)
+    this.http.post('https://localhost:7033/api/auth/otpverify', OTP, {
+      withCredentials: true
+    })
       .subscribe(
         (response:any) => {
           console.log('OTP verified successfully', response.Message);
