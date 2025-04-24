@@ -16,5 +16,6 @@ public class Profile
     public string likedin{get;set;}
     public string github{get;set;}
     public string imageURL{get;set;}
+    public string designation{get;set;}
 
 }

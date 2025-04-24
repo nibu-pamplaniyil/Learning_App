@@ -45,7 +45,8 @@ public class ProfileController:Controller
                 profile.email,
                 profile.likedin,
                 profile.github,
-                profile.imageURL
+                profile.imageURL,
+                profile.designation
             );
 
             return CreatedAtAction(nameof(getProfile), new { id = result.id }, result);
@@ -92,7 +93,8 @@ public class ProfileController:Controller
                 profile.email,
                 profile.likedin,
                 profile.github,
-                profile.imageURL
+                profile.imageURL,
+                profile.designation
             );
 
             return Ok(new { message = "Profile updated successfully", data = updated });

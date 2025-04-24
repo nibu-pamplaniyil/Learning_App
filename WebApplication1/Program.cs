@@ -2,7 +2,8 @@ using WebApplication1.Data;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models;
 using WebApplication1.Services;
-using Microsoft.AspNetCore.Identity;// Add this line
+using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi.Models;// Add this line
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IAuthService, Auth>();
 builder.Services.AddScoped<ISkillsService, SkillsService>();
 builder.Services.AddScoped<IEmailService, EmailServicer>();
+builder.Services.AddScoped<IProfileServicer,ProfileServicer>();
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 
@@ -52,6 +54,10 @@ builder.Services.AddIdentity<Register, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDBContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddSwaggerGen(x=>{
+    x.SwaggerDoc("v1",new OpenApiInfo{Title="My Portfolio", Version="v1"});
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -61,6 +67,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAllOrigins");
+
+app.UseSwagger();
+
+app.UseSwaggerUI(x=>{
+    x.SwaggerEndpoint("/swagger/v1/swagger.json","My Portfolio v1");
+    x.RoutePrefix=string.Empty;
+});
 
 app.UseHttpsRedirection();
 
