@@ -1,0 +1,10 @@
+<header>
+    <div class="logo">Nibu</div>
+    <nav>
+      <ul>
+        <li *ngFor="let link of navLinks">
+          <a [routerLink]="link.path" routerLinkActive="active">{{ link.label }}</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
