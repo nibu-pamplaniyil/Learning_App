@@ -1,16 +1,41 @@
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-hero',
   standalone:true,
+  imports:[RouterModule],
   templateUrl: './hero.component.html',
   styleUrls: ['./hero.component.scss']
 })
-export class HeroComponent {
+export class HeroComponent implements OnInit{
   greeting: string = 'HELLO!';
-  name: string = 'I Am [Your Name]';
-  description: string = "I'm a [Your Profession] with [Your Experience] years of experience. My expertise is in [Your Skills] and more...";
-  viewWorkLink: string = '/portfolio'; // Example link
-  hireMeLink: string = '/contact';   // Example link
-  profileImage: string = 'C:\Users\nibug\Downloads\WhatsApp Image 2025-04-10 at 16.25.38_2be1ae48.jpg'; // Path to your image
+  name: string = 'I Am Nibu George';
+  experience:number=0;
+  descriptions: string = '';
+  designation:string='';
+  viewWorkLink: string = '/portfolio'; 
+  hireMeLink: string = '/contact';   
+  profileImage: string = '';
+
+  constructor(private http:HttpClient){}
+
+  ngOnInit(): void {
+    this.http.get<any>('http://localhost:5263/api/profile').subscribe(x=>{
+
+      const data = x?.data?.[0];
+      console.log(data);
+      if(data)
+      {
+        this.experience=data.experience;
+        this.profileImage=data.imageURL;
+        this.designation=data.designation;
+        console.log(x);
+        this.descriptions = `I'm a ${this.designation} with ${this.experience} years of experience. My expertise is in web development and more...`;
+        console.log(data.experience);
+        console.log(this.descriptions);
+      }
+    });
+  }
 }
