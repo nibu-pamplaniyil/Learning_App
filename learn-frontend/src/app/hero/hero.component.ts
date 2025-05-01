@@ -25,16 +25,12 @@ export class HeroComponent implements OnInit{
     this.http.get<any>('http://localhost:5263/api/profile').subscribe(x=>{
 
       const data = x?.data?.[0];
-      console.log(data);
       if(data)
       {
         this.experience=data.experience;
         this.profileImage=data.imageURL;
         this.designation=data.designation;
-        console.log(x);
         this.descriptions = `I'm a ${this.designation} with ${this.experience} years of experience. My expertise is in web development and more...`;
-        console.log(data.experience);
-        console.log(this.descriptions);
       }
     });
   }

@@ -14,7 +14,6 @@ export class HeaderComponent {
     { path: '/', label: 'Home' },
     { path: '/about', label: 'About' },
     { path: '/skills', label: 'Skills' },
-    { path: '/resume', label: 'Resume' },
     { path: '/contact', label: 'Contact' },
   ];
 }
