@@ -11,7 +11,7 @@ public class ProfileServicer:IProfileServicer
     {
         _context = context;
     }
-    public async Task<Profile> addProfile(string name,string description,double experience,string mobile,string email,string likedin,string github,string imageURL,string designation)
+    public async Task<Profile> addProfile(string name,string description,double experience,string mobile,string email,string likedin,string github,string imageURL,string designation,string pic1,string pic2,string resume)
     {   
         try{
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(description)
@@ -32,7 +32,10 @@ public class ProfileServicer:IProfileServicer
                 likedin = likedin,
                 github=github,
                 imageURL = imageURL,
-                designation = designation
+                designation = designation,
+                pic1 = pic1,
+                pic2 = pic2,
+                resume = resume
                 
             };
             _context.Profile.Add(profile);

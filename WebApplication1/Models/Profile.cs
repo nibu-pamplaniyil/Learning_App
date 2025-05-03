@@ -15,7 +15,10 @@ public class Profile
     public string email{get;set;}
     public string likedin{get;set;}
     public string github{get;set;}
-    public string imageURL{get;set;}
+    public string? imageURL{get;set;}
     public string designation{get;set;}
+    public string? pic1{get;set;}
+    public string? pic2{get;set;}
+    public string? resume{get;set;}
 
 }
