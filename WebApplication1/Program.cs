@@ -13,6 +13,7 @@ builder.Services.AddScoped<IAuthService, Auth>();
 builder.Services.AddScoped<ISkillsService, SkillsService>();
 builder.Services.AddScoped<IEmailService, EmailServicer>();
 builder.Services.AddScoped<IProfileServicer,ProfileServicer>();
+builder.Services.AddScoped<IContactServicer,ContactServicer>();
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 

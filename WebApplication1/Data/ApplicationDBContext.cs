@@ -11,4 +11,5 @@ public class ApplicationDBContext : IdentityDbContext
     public DbSet<Register> Registers { get; set; }
     public DbSet<Skills> Skills { get; set; }
     public DbSet<Profile> Profile{get;set;}
+    public DbSet<Contact> Contact{get;set;}
 }
