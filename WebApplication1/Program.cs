@@ -14,6 +14,7 @@ builder.Services.AddScoped<ISkillsService, SkillsService>();
 builder.Services.AddScoped<IEmailService, EmailServicer>();
 builder.Services.AddScoped<IProfileServicer,ProfileServicer>();
 builder.Services.AddScoped<IContactServicer,ContactServicer>();
+builder.Services.AddScoped<ISubSkillsServicer,SubSkillsServicer>();
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 

@@ -12,4 +12,5 @@ public class ApplicationDBContext : IdentityDbContext
     public DbSet<Skills> Skills { get; set; }
     public DbSet<Profile> Profile{get;set;}
     public DbSet<Contact> Contact{get;set;}
+    public DbSet<SubSkills> SubSkills{get; set;}
 }
