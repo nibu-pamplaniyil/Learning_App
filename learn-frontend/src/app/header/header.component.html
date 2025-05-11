@@ -1,6 +1,10 @@
 <header>
   <div class="logo">Nibu George</div>
-  <nav>
+  <div class="hamburger" (click)="toggleMenu()">
+    &#9776;
+  </div>
+
+  <nav [class.mobile-open]="isMenuOpen">
     <ul>
       <li *ngFor="let link of navLinks">
         <a

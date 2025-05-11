@@ -71,7 +71,7 @@
   }
   
   .image-container img {
-    width: 80%;
+    width: 70%;
     height: auto;
     border-radius: 50%;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); 
@@ -84,15 +84,19 @@
       text-align: center;
       padding: 30px; 
     }
+    .view-work-button{
+      display: none;
+    }
   
     .text-content {
       padding-left: 0;
       margin-bottom: 40px;
     }
   
-    .image-container {
+    .image-container img{
       justify-content: center;
       margin-bottom: 30px;
+      width:50%;
     }
   
     .name {
@@ -109,6 +113,8 @@
   display: flex;
   align-items: center;
   min-height: 450px;
+  max-width: 100%;
+  overflow-x: hidden;
   background-color: white; 
   color: #333; 
   padding: 40px; 
@@ -199,6 +205,37 @@
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); 
   object-fit: cover;
 }
+.resume-wrapper {
+  position: fixed;
+  overflow-x: hidden;
+  top: 80px;
+  bottom: 20px;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  z-index: 999;
+}
+
+.resume-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+.close-btn {
+  position: absolute;
+  top: 0px;
+  right: 180px;
+  z-index: 1000;
+  background: transparent;
+  color: rgb(252, 252, 252);
+  border: none;
+  padding: 10px 13px;
+  font-size: 1em;
+  cursor: pointer;
+  border-radius: 5px;
+  height: 30px;
+}
 
 @media (max-width: 768px) {
   .hero-container {
@@ -206,15 +243,26 @@
     text-align: center;
     padding: 30px; 
   }
+  .greeting {
+    font-size: 1.2em;
+  }
+  .description {
+    font-size: 1em;
+  }
+
 
   .text-content {
     padding-left: 0;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
   }
 
   .image-container {
     justify-content: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+  }
+  .buttons button {
+    width: 80%;
+    font-size: 1em;
   }
 
   .name {
@@ -225,21 +273,37 @@
     flex-direction: column; 
     align-items: center;
     gap: 15px;
+    margin-bottom: 20px;
   }
 
   .resume-wrapper {
     position: fixed;
-    top: 0;
+    top: 100px;
     left: 0;
     width: 100vw;
     height: 100vh;
     background-color: white;
     z-index: 999;
+    overflow-x: hidden;
   }
   
   .resume-wrapper iframe {
     width: 100%;
     height: 100%;
     border: none;
+  }
+  .close-btn {
+    position: absolute;
+    top: 100px;
+    right: 180px;
+    z-index: 1000;
+    background: transparent;
+    color: rgb(252, 252, 252);
+    border: none;
+    padding: 10px 13px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
   }
 }

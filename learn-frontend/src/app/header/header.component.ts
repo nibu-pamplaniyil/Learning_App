@@ -16,4 +16,10 @@ export class HeaderComponent {
     { path: '/skills', label: 'Skills' },
     { path: '/contact', label: 'Contact' },
   ];
+
+  isMenuOpen = false;
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
 }

@@ -3,7 +3,11 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 20px 50px;
+    top:0;
+    z-index: 1000;
+    position: sticky;
     background-color: #2c2c2c; 
+    border-radius: 20px;
     color: white;
   }
   
@@ -48,23 +52,46 @@ header {
   nav ul li a:hover {
     color: #f06292; 
   }
+  .hamburger {
+    display: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: white;
+  }
   
   
   @media (max-width: 768px) {
-    header {
-      flex-direction: column;
-      align-items: flex-start;
+    .hamburger {
+      display: block;
     }
   
     nav ul {
-      margin-top: 15px;
+      display: none;
       flex-direction: column;
+      width: 100%;
+      background-color: #2c2c2c;
+      padding: 10px 0;
+    }
+  
+    nav.mobile-open ul {
+      display: flex;
+    }
+  
+    header {
       align-items: flex-start;
+      padding: 20px;
     }
   
     nav ul li {
       margin-left: 0;
       margin-bottom: 10px;
+      width: 100%;
     }
+  
+    nav ul li a {
+      display: block;
+      width: 100%;
+    }
+  
   }
   
