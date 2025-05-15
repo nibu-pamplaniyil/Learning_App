@@ -4,6 +4,8 @@ using WebApplication1.Models;
 using WebApplication1.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;// Add this line
+using System.Text.Json.Serialization;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,9 @@ builder.Services.AddSession(option =>
 });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddControllers().AddJsonOptions(x =>
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 builder.Services.AddCors(options =>
 {

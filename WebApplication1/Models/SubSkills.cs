@@ -7,10 +7,8 @@ public class SubSkills
 {
     [Key]
     public Guid Id{get; set;}
-    
-    [ForeignKey("Skill")]
     public Guid SkillId{get; set;}
     public string SubSkill{get; set;}
-
+    [ForeignKey("SkillId")]
     public Skills skills{get; set;}
 }
