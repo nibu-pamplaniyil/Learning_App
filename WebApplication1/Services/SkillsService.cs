@@ -25,7 +25,7 @@ public class SkillsService : ISkillsService
 
     public async Task<List<Skills>> GetAllSkills()
     {
-        var skills = await _context.Skills.ToListAsync();
+        var skills = await _context.Skills.Include(s=>s.subSkills).ToListAsync();
         return skills;
     }
 
