@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SafeUrlModule } from './safe-url.module';
+import { HeroService } from './hero.service';
 
 @Component({
   selector: 'app-hero',
@@ -23,11 +23,10 @@ export class HeroComponent implements OnInit {
   profileImage: string = '';
   resumeVisible = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private heroServicer:HeroService) {}
 
   ngOnInit(): void {
-    this.http.get<any>('http://localhost:5263/api/profile').subscribe(x => {
-      const data = x?.data?.[0];
+    this.heroServicer.getProfile().subscribe(data => {
       if (data) {
         this.experience = data.experience;
         this.profileImage = data.imageURL;
